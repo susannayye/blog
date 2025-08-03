@@ -42,4 +42,4 @@ Name填写 TOKEN 大写， Secret 填写刚刚保存的 TOKEN
 8、完成！坐等2分钟，打开链接 [https://你的用户名.github.io/nav](https://xn--6qqv7i14ofosyrb.github.io/nav)
 
 后台
-项目包含后台，不需要额外部署，只需要将链接后面增加 system => https://nav3.cn/#system
+项目包含后台，不需要额外部署，只需要将链接后面增加 system => https://nav3.cn/system
