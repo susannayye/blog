@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Ai氪的博客</title><link>https://susannayye.github.io/blog</link><description>我是Ai氪，分享好玩软件DIY的技术类博主</description><copyright>Ai氪的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/170783091?s=400&amp;u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&amp;v=4</url><title>avatar</title><link>https://susannayye.github.io/blog</link></image><lastBuildDate>Sun, 03 Aug 2025 11:57:22 +0000</lastBuildDate><managingEditor>Ai氪的博客</managingEditor><ttl>60</ttl><webMaster>Ai氪的博客</webMaster><item><title>Ubuntu 常用命令</title><link>https://susannayye.github.io/blog/post/Ubuntu%20-chang-yong-ming-ling.html</link><description>
+
 **Ubuntu 常用命令**
 
 第一章：基础操作命令
@@ -111,13 +110,6 @@
 * 
 5.2 管道和重定向
 * |：管道，将前一个命令的输出作为后一个命令的输入
-* ls -l | grep 'file'
+* ls -l | grep "file"
 * 
-* &gt;：输出重定向，将命令的输出写入文件
-。</description><guid isPermaLink="true">https://susannayye.github.io/blog/post/Ubuntu%20-chang-yong-ming-ling.html</guid><pubDate>Sun, 03 Aug 2025 11:51:42 +0000</pubDate></item><item><title>创建nav导航网站</title><link>https://susannayye.github.io/blog/post/chuang-jian-nav-dao-hang-wang-zhan.html</link><description>效果
-[具体效果点这里 https://nav3.cn](https://nav3.cn/)
-
-特性
-三不需：无需数据库、无需服务器、无需成本
-
-发现导航 的理念就是做一款无需依赖后端服务既简单又方便，没有繁杂的配置和数据库等配置概念, 做到开箱即用。</description><guid isPermaLink="true">https://susannayye.github.io/blog/post/chuang-jian-nav-dao-hang-wang-zhan.html</guid><pubDate>Sun, 03 Aug 2025 10:09:02 +0000</pubDate></item><item><title>blog测试</title><link>https://susannayye.github.io/blog/post/blog-ce-shi.html</link><description>正文blog测试。</description><guid isPermaLink="true">https://susannayye.github.io/blog/post/blog-ce-shi.html</guid><pubDate>Sun, 03 Aug 2025 02:17:10 +0000</pubDate></item></channel></rss>
+* >：输出重定向，将命令的输出写入文件
