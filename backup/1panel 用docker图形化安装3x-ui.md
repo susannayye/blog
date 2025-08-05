@@ -1,5 +1,3 @@
-## 1panel 用docker图形化安装3x-ui
-
 #安装1panel面板
 
 <https://1panel.cn/docs/installation/online_installation/>
@@ -7,7 +5,7 @@
 我使用的服务器为ubuntu，先通过ssh安装它
 
 ```
-curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
 ```
 
 * 选择你喜欢的语言：**2**
