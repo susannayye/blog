@@ -4,7 +4,7 @@
 
 <https://1panel.cn/docs/installation/online_installation/>
 
-我使用的服务器为debain12，先通过ssh安装它
+我使用的服务器为ubuntu，先通过ssh安装它
 
 ```
 curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
@@ -152,11 +152,11 @@ http\://127.0.0.1:2053 为本地地址
 
 <img width="907" height="422" alt="Image" src="https://github.com/user-attachments/assets/ea1c6ccc-bc32-45d7-adbe-22644ffe499c" />
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp)
+<img width="897" height="491" alt="Image" src="https://github.com/user-attachments/assets/75162cdc-cb03-4bee-bd1d-3f4949d571af" />
 
 #### 启用https
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e532d1dae9.webp)
+<img width="888" height="663" alt="Image" src="https://github.com/user-attachments/assets/f4e85668-3b9f-4d40-be80-a9b06cf1ac04" />
 
 #### 官方的nginx代码
 
@@ -186,7 +186,7 @@ location ^~ /sub {
 }
 ```
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e657b959ec.webp)
+<img width="884" height="581" alt="Image" src="https://github.com/user-attachments/assets/6198cd54-8f04-4dda-af79-51b6bb913618" />
 
 ##### 如果你出现了无限301 重定向次数的问题
 
