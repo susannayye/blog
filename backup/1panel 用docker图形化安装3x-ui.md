@@ -2,7 +2,7 @@
 
 <https://1panel.cn/docs/installation/online_installation/>
 
-我使用的服务器为ubuntu，先通过ssh安装它
+服务器为ubuntu，先通过ssh安装它
 
 ```
 curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh

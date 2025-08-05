@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Ai氪的博客</title><link>https://susannayye.github.io/blog</link><description>我是Ai氪，分享好玩软件DIY的技术类博主</description><copyright>Ai氪的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/170783091?s=400&amp;u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&amp;v=4</url><title>avatar</title><link>https://susannayye.github.io/blog</link></image><lastBuildDate>Tue, 05 Aug 2025 06:32:53 +0000</lastBuildDate><managingEditor>Ai氪的博客</managingEditor><ttl>60</ttl><webMaster>Ai氪的博客</webMaster><item><title>1panel 用docker图形化安装3x-ui</title><link>https://susannayye.github.io/blog/post/1panel%20-yong-docker-tu-xing-hua-an-zhuang-3x-ui.html</link><description>#安装1panel面板
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Ai氪的博客</title><link>https://susannayye.github.io/blog</link><description>我是Ai氪，分享好玩软件DIY的技术类博主</description><copyright>Ai氪的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/170783091?s=400&amp;u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&amp;v=4</url><title>avatar</title><link>https://susannayye.github.io/blog</link></image><lastBuildDate>Tue, 05 Aug 2025 06:34:01 +0000</lastBuildDate><managingEditor>Ai氪的博客</managingEditor><ttl>60</ttl><webMaster>Ai氪的博客</webMaster><item><title>1panel 用docker图形化安装3x-ui</title><link>https://susannayye.github.io/blog/post/1panel%20-yong-docker-tu-xing-hua-an-zhuang-3x-ui.html</link><description>#安装1panel面板
 
 &lt;https://1panel.cn/docs/installation/online_installation/&gt;
 
-我使用的服务器为ubuntu，先通过ssh安装它
+服务器为ubuntu，先通过ssh安装它
 
 ```
 curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh &amp;&amp; sudo bash quick_start.sh
