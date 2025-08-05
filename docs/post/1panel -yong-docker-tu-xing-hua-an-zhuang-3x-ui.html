@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/170783091?s=400&u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="## 1panel 用docker图形化安装3x-ui
+
+#安装1panel面板
+
+<https://1panel.cn/docs/installation/online_installation/>
+
+我使用的服务器为debain12，先通过ssh安装它
+
+```
+curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+```
+
+* 选择你喜欢的语言：**2**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca8be42abe.webp)
+
+* 默认 **opt**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca9151a8fa.webp)
+
+* 设置**端口**
+
+* 设置**安全入口**
+
+* 设置**账号**
+
+* 设置**密码**
+
+### 安装防火墙
+
+<https://1panel.cn/docs/user_manual/hosts/firewall/>
+
+#### 更新软件包
+
+```
+sudo apt update
+```
+
+#### 安装 UFW
+
+```
+sudo apt install ufw
+```
+
+#### 放开 1Panel 系统端口
+
+```
+sudo ufw allow 8090/tcp
+```
+
+上述命令中的 8090 端口需要替换为安装 1Panel 系统时自定义的端口
+
+因还是需要通过命令，后续的所有操作由1panel内置终端操作
+
+#### 启动 UFW
+
+```
+sudo ufw enable
+```
+
+#### 不放行22端口
+
+为了安全着想
+
+如果你的ssh非标准也不需要放开，请注意，如果你没有放开1panel，将无法在访问，则需要服务商提供通过vnc或控制台放开端口
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676cae1f1d71f.webp)
+
+### 使用编排docker
+
+```
+version: '3'
+
+services:
+  3x-ui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3x-ui
+    hostname: my-3x-ui
+    volumes:
+      - ./db/:/etc/x-ui/
+      - ./cert/:/root/cert/  #默认路径在/opt/1panel/docker/compose/下面
+    environment:
+      XRAY_VMESS_AEAD_FORCED: 'false'
+    tty: true
+    network_mode: host
+    restart: unless-stopped
+```
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e3dcf1a0c6.webp)
+
+#### 容器日志
+
+已经成功运行，它原使用的是本地host
+
+你可以通过浏览器访问 http\://<服务器IP地址>:2053 来访问 3x-ui 的 Web 界面，**如果你安装了防火墙，是访问不了的，请先放开端口**
+
+```
+erver ready
+(0x2a354e0,0xc00060e1b0)
+2024/12/27 09:12:33 Starting x-ui 2.4.10
+(0x2a354e0,0xc0004c2630)
+INFO - Web server running HTTP on [::]:2053
+INFO - XRAY: infra/conf/serial: Reading config: &{Name:bin/config.json Format:json}
+WARNING - XRAY: core: Xray 24.12.18 started
+```
+
+## 设置x-ui
+
+官方教程
+
+<https://github.com/MHSanaei/3x-ui>
+
+> 并不建议使用80 443 端口，可以使用其他非标准端口
+
+默认用户名:admin
+
+默认密码：admin
+
+请注意登录进去修改对应的账号密码，
+
+![676e6482864fc.webp](https://lsky.5ee.net/lsky/2024/12/27/676e6482864fc.webp)
+
+### 安全设置
+
+#### 修改密码用户名以及开启令牌
+
+注意保存令牌
+
+面板设置-安全设定
+
+修改原用户名密码
+
+搞定后保存后重启面板
+
+![676e64829454b.webp](https://lsky.5ee.net/lsky/2024/12/27/676e64829454b.webp)
+
+#### 修改默认url地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e629f45854.webp)
+
+### 新建一个反向代理
+
+前提是域名解析到当前服务器IP地址
+
+通过1panel安装openresty（nginx），使用它新建一个反向代理
+
+http\://127.0.0.1:2053 为本地地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e523045bb7.webp)
+
+#### 申请证书
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e7490a8c48.webp)
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp)
+
+#### 启用https
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e532d1dae9.webp)
+
+#### 官方的nginx代码
+
+```
+location /sub {
+#Nginx 子路径
+#确保面板设置中的 “URI Path” 相同。">
+<meta property="og:title" content="1panel 用docker图形化安装3x-ui">
+<meta property="og:description" content="## 1panel 用docker图形化安装3x-ui
+
+#安装1panel面板
+
+<https://1panel.cn/docs/installation/online_installation/>
+
+我使用的服务器为debain12，先通过ssh安装它
+
+```
+curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && bash quick_start.sh
+```
+
+* 选择你喜欢的语言：**2**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca8be42abe.webp)
+
+* 默认 **opt**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca9151a8fa.webp)
+
+* 设置**端口**
+
+* 设置**安全入口**
+
+* 设置**账号**
+
+* 设置**密码**
+
+### 安装防火墙
+
+<https://1panel.cn/docs/user_manual/hosts/firewall/>
+
+#### 更新软件包
+
+```
+sudo apt update
+```
+
+#### 安装 UFW
+
+```
+sudo apt install ufw
+```
+
+#### 放开 1Panel 系统端口
+
+```
+sudo ufw allow 8090/tcp
+```
+
+上述命令中的 8090 端口需要替换为安装 1Panel 系统时自定义的端口
+
+因还是需要通过命令，后续的所有操作由1panel内置终端操作
+
+#### 启动 UFW
+
+```
+sudo ufw enable
+```
+
+#### 不放行22端口
+
+为了安全着想
+
+如果你的ssh非标准也不需要放开，请注意，如果你没有放开1panel，将无法在访问，则需要服务商提供通过vnc或控制台放开端口
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676cae1f1d71f.webp)
+
+### 使用编排docker
+
+```
+version: '3'
+
+services:
+  3x-ui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3x-ui
+    hostname: my-3x-ui
+    volumes:
+      - ./db/:/etc/x-ui/
+      - ./cert/:/root/cert/  #默认路径在/opt/1panel/docker/compose/下面
+    environment:
+      XRAY_VMESS_AEAD_FORCED: 'false'
+    tty: true
+    network_mode: host
+    restart: unless-stopped
+```
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e3dcf1a0c6.webp)
+
+#### 容器日志
+
+已经成功运行，它原使用的是本地host
+
+你可以通过浏览器访问 http\://<服务器IP地址>:2053 来访问 3x-ui 的 Web 界面，**如果你安装了防火墙，是访问不了的，请先放开端口**
+
+```
+erver ready
+(0x2a354e0,0xc00060e1b0)
+2024/12/27 09:12:33 Starting x-ui 2.4.10
+(0x2a354e0,0xc0004c2630)
+INFO - Web server running HTTP on [::]:2053
+INFO - XRAY: infra/conf/serial: Reading config: &{Name:bin/config.json Format:json}
+WARNING - XRAY: core: Xray 24.12.18 started
+```
+
+## 设置x-ui
+
+官方教程
+
+<https://github.com/MHSanaei/3x-ui>
+
+> 并不建议使用80 443 端口，可以使用其他非标准端口
+
+默认用户名:admin
+
+默认密码：admin
+
+请注意登录进去修改对应的账号密码，
+
+![676e6482864fc.webp](https://lsky.5ee.net/lsky/2024/12/27/676e6482864fc.webp)
+
+### 安全设置
+
+#### 修改密码用户名以及开启令牌
+
+注意保存令牌
+
+面板设置-安全设定
+
+修改原用户名密码
+
+搞定后保存后重启面板
+
+![676e64829454b.webp](https://lsky.5ee.net/lsky/2024/12/27/676e64829454b.webp)
+
+#### 修改默认url地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e629f45854.webp)
+
+### 新建一个反向代理
+
+前提是域名解析到当前服务器IP地址
+
+通过1panel安装openresty（nginx），使用它新建一个反向代理
+
+http\://127.0.0.1:2053 为本地地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e523045bb7.webp)
+
+#### 申请证书
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e7490a8c48.webp)
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp)
+
+#### 启用https
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e532d1dae9.webp)
+
+#### 官方的nginx代码
+
+```
+location /sub {
+#Nginx 子路径
+#确保面板设置中的 “URI Path” 相同。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://susannayye.github.io/blog/post/1panel%20-yong-docker-tu-xing-hua-an-zhuang-3x-ui.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/170783091?s=400&u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&v=4">
+<title>1panel 用docker图形化安装3x-ui</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">1panel 用docker图形化安装3x-ui</h1>
+<div class="title-right">
+    <a href="https://susannayye.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/susannayye/blog/issues/8" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h2>1panel 用docker图形化安装3x-ui</h2>
+<p>#安装1panel面板</p>
+<p><a href="https://1panel.cn/docs/installation/online_installation/" rel="nofollow">https://1panel.cn/docs/installation/online_installation/</a></p>
+<p>我使用的服务器为debain12，先通过ssh安装它</p>
+<pre class="notranslate"><code class="notranslate">curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh &amp;&amp; bash quick_start.sh
+</code></pre>
+<ul>
+<li>选择你喜欢的语言：<strong>2</strong></li>
+</ul>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/7a5c0417c16cd80845dd04b15083b13cd88b804664272f2f92413ab734c5ec95/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636138626534326162652e77656270"><img src="https://camo.githubusercontent.com/7a5c0417c16cd80845dd04b15083b13cd88b804664272f2f92413ab734c5ec95/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636138626534326162652e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/26/676ca8be42abe.webp" style="max-width: 100%;"></a></p>
+<ul>
+<li>默认 <strong>opt</strong></li>
+</ul>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/98e63c10386dc76669db5e6c06e018ebdca36254c911d65de5e50bf958c30fec/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636139313531613866612e77656270"><img src="https://camo.githubusercontent.com/98e63c10386dc76669db5e6c06e018ebdca36254c911d65de5e50bf958c30fec/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636139313531613866612e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/26/676ca9151a8fa.webp" style="max-width: 100%;"></a></p>
+<ul>
+<li>
+<p>设置<strong>端口</strong></p>
+</li>
+<li>
+<p>设置<strong>安全入口</strong></p>
+</li>
+<li>
+<p>设置<strong>账号</strong></p>
+</li>
+<li>
+<p>设置<strong>密码</strong></p>
+</li>
+</ul>
+<h3>安装防火墙</h3>
+<p><a href="https://1panel.cn/docs/user_manual/hosts/firewall/" rel="nofollow">https://1panel.cn/docs/user_manual/hosts/firewall/</a></p>
+<h4>更新软件包</h4>
+<pre class="notranslate"><code class="notranslate">sudo apt update
+</code></pre>
+<h4>安装 UFW</h4>
+<pre class="notranslate"><code class="notranslate">sudo apt install ufw
+</code></pre>
+<h4>放开 1Panel 系统端口</h4>
+<pre class="notranslate"><code class="notranslate">sudo ufw allow 8090/tcp
+</code></pre>
+<p>上述命令中的 8090 端口需要替换为安装 1Panel 系统时自定义的端口</p>
+<p>因还是需要通过命令，后续的所有操作由1panel内置终端操作</p>
+<h4>启动 UFW</h4>
+<pre class="notranslate"><code class="notranslate">sudo ufw enable
+</code></pre>
+<h4>不放行22端口</h4>
+<p>为了安全着想</p>
+<p>如果你的ssh非标准也不需要放开，请注意，如果你没有放开1panel，将无法在访问，则需要服务商提供通过vnc或控制台放开端口</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/1de3feb2743a1dbd109860af690f1e4c2f0a85f2407bbead6a8c793d7e5889c9/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636165316631643731662e77656270"><img src="https://camo.githubusercontent.com/1de3feb2743a1dbd109860af690f1e4c2f0a85f2407bbead6a8c793d7e5889c9/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32362f363736636165316631643731662e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/26/676cae1f1d71f.webp" style="max-width: 100%;"></a></p>
+<h3>使用编排docker</h3>
+<pre class="notranslate"><code class="notranslate">version: "3"
+
+services:
+  3x-ui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3x-ui
+    hostname: my-3x-ui
+    volumes:
+      - ./db/:/etc/x-ui/
+      - ./cert/:/root/cert/  #默认路径在/opt/1panel/docker/compose/下面
+    environment:
+      XRAY_VMESS_AEAD_FORCED: "false"
+    tty: true
+    network_mode: host
+    restart: unless-stopped
+</code></pre>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/418ff789bd52bb3fa6f1a815f715b6b43cab4196d996aa0ffeea182741b47cee/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653364636631613063362e77656270"><img src="https://camo.githubusercontent.com/418ff789bd52bb3fa6f1a815f715b6b43cab4196d996aa0ffeea182741b47cee/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653364636631613063362e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e3dcf1a0c6.webp" style="max-width: 100%;"></a></p>
+<h4>容器日志</h4>
+<p>已经成功运行，它原使用的是本地host</p>
+<p>你可以通过浏览器访问 http://&lt;服务器IP地址&gt;:2053 来访问 3x-ui 的 Web 界面，<strong>如果你安装了防火墙，是访问不了的，请先放开端口</strong></p>
+<pre class="notranslate"><code class="notranslate">erver ready
+(0x2a354e0,0xc00060e1b0)
+2024/12/27 09:12:33 Starting x-ui 2.4.10
+(0x2a354e0,0xc0004c2630)
+INFO - Web server running HTTP on [::]:2053
+INFO - XRAY: infra/conf/serial: Reading config: &amp;{Name:bin/config.json Format:json}
+WARNING - XRAY: core: Xray 24.12.18 started
+</code></pre>
+<h2>设置x-ui</h2>
+<p>官方教程</p>
+<p><a href="https://github.com/MHSanaei/3x-ui">https://github.com/MHSanaei/3x-ui</a></p>
+<blockquote>
+<p>并不建议使用80 443 端口，可以使用其他非标准端口</p>
+</blockquote>
+<p>默认用户名:admin</p>
+<p>默认密码：admin</p>
+<p>请注意登录进去修改对应的账号密码，</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/59c813a7498561b27b3f428fd4b481de9109721c1f3a42df94779d9ced5e8199/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653634383238363466632e77656270"><img src="https://camo.githubusercontent.com/59c813a7498561b27b3f428fd4b481de9109721c1f3a42df94779d9ced5e8199/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653634383238363466632e77656270" alt="676e6482864fc.webp" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e6482864fc.webp" style="max-width: 100%;"></a></p>
+<h3>安全设置</h3>
+<h4>修改密码用户名以及开启令牌</h4>
+<p>注意保存令牌</p>
+<p>面板设置-安全设定</p>
+<p>修改原用户名密码</p>
+<p>搞定后保存后重启面板</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/44be9b57f2bfc8ce7e2ef5956348c2ec021090a2d05a421075f1ed289006e947/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653634383239343534622e77656270"><img src="https://camo.githubusercontent.com/44be9b57f2bfc8ce7e2ef5956348c2ec021090a2d05a421075f1ed289006e947/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653634383239343534622e77656270" alt="676e64829454b.webp" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e64829454b.webp" style="max-width: 100%;"></a></p>
+<h4>修改默认url地址</h4>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/ec0f63c5b1d0ce47ab17f6854b7b91bf3e1acc1ab5346fb866bf086db8bf3ca8/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653632396634353835342e77656270"><img src="https://camo.githubusercontent.com/ec0f63c5b1d0ce47ab17f6854b7b91bf3e1acc1ab5346fb866bf086db8bf3ca8/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653632396634353835342e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e629f45854.webp" style="max-width: 100%;"></a></p>
+<h3>新建一个反向代理</h3>
+<p>前提是域名解析到当前服务器IP地址</p>
+<p>通过1panel安装openresty（nginx），使用它新建一个反向代理</p>
+<p>http://127.0.0.1:2053 为本地地址</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/32ecda540bb07d6d0bffee21ee4a7d7cf20c7f64ab290379506c6f58dbc1c07a/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653532333034356262372e77656270"><img src="https://camo.githubusercontent.com/32ecda540bb07d6d0bffee21ee4a7d7cf20c7f64ab290379506c6f58dbc1c07a/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653532333034356262372e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e523045bb7.webp" style="max-width: 100%;"></a></p>
+<h4>申请证书</h4>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/ad875688d29fcc69fa25f4fdbe0119f6ec5fb15fd9f34b3e0c78922e21ed3a60/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653734393061386334382e77656270"><img src="https://camo.githubusercontent.com/ad875688d29fcc69fa25f4fdbe0119f6ec5fb15fd9f34b3e0c78922e21ed3a60/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653734393061386334382e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e7490a8c48.webp" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/395a4aabad493181620bac8ffc83cca17dc6b289c57cd98dcf47254875630e22/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653532626130346531322e77656270"><img src="https://camo.githubusercontent.com/395a4aabad493181620bac8ffc83cca17dc6b289c57cd98dcf47254875630e22/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653532626130346531322e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp" style="max-width: 100%;"></a></p>
+<h4>启用https</h4>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/081c1395821e4a10b45156182a8e83c300cace884b7460ac55c152b68cf6c89e/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653533326431646165392e77656270"><img src="https://camo.githubusercontent.com/081c1395821e4a10b45156182a8e83c300cace884b7460ac55c152b68cf6c89e/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653533326431646165392e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e532d1dae9.webp" style="max-width: 100%;"></a></p>
+<h4>官方的nginx代码</h4>
+<pre class="notranslate"><code class="notranslate">location /sub {
+#Nginx 子路径
+#确保面板设置中的 “URI Path” 相同。/sub
+#面板中的 需要以 结尾。url/
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Range $http_range;
+    proxy_set_header If-Range $http_if_range; 
+    proxy_redirect off;
+    proxy_pass http://127.0.0.1:2053;
+}
+</code></pre>
+<pre class="notranslate"><code class="notranslate">location ^~ /sub { 
+#自用反代代码
+    proxy_pass http://127.0.0.1:2053/sub;
+    proxy_set_header Host $http_host;
+    add_header Cache-Control no-cache;
+    proxy_ssl_server_name on; 
+}
+</code></pre>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/a0ebec7dee2f3ad4e54e5544e52efa5ec9a50542633d11c218ad4a6b3eb01c1d/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653635376239353965632e77656270"><img src="https://camo.githubusercontent.com/a0ebec7dee2f3ad4e54e5544e52efa5ec9a50542633d11c218ad4a6b3eb01c1d/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736653635376239353965632e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676e657b959ec.webp" style="max-width: 100%;"></a></p>
+<h5>如果你出现了无限301 重定向次数的问题</h5>
+<p>请删除这个if判断的重定向代码</p>
+<h5>如果你需要了奇怪的问题</h5>
+<p>比如打不开，证书没应用，我个人建议不要使用一键反向代理</p>
+<p>请使用静态网站，然后在nginx中的配置文件修改规则即可</p>
+<p>现在你可以通过 [https://域名:端口/子路径，就可以成功登录到x-ui了。]</p>
+<h3>添加入站列表</h3>
+<p>新建一个入站规则</p>
+<p>无特殊需求默认即可</p>
+<ul>
+<li>
+<p>老的软件不支持vless （只需要注意你要用哪种协议，自己选择）</p>
+</li>
+<li>
+<p>服务器防火墙 <strong>开放</strong>对应的<strong>端口</strong></p>
+</li>
+<li>
+<p>可以开启<strong>tls</strong>。证书路径为**/root/cert/**XXX公钥或秘钥证书文件名</p>
+<ul>
+<li>
+<p>文件名查看地址为：<strong>/opt/1panel/docker/compose/3x-ui/cert</strong>，这个地址是刚才1panel一键申请证书的位置</p>
+</li>
+<li>
+<p>一般来说地址是：/root/cert/fullchain.pem /root/cert/privkey.pem</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>其他无特殊需求可以不需要设置</strong></p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/88f914e2879bf650e342e4ab2c1af3aeb293eed1913a52ab79c17468ecbd6f36/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736656133353638633334342e77656270"><img src="https://camo.githubusercontent.com/88f914e2879bf650e342e4ab2c1af3aeb293eed1913a52ab79c17468ecbd6f36/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736656133353638633334342e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676ea3568c344.webp" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/ed52a57da78247d4084787f594e7d7aa136ff94ac4d36a391e387933baf2a67e/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736656134656666306439372e77656270"><img src="https://camo.githubusercontent.com/ed52a57da78247d4084787f594e7d7aa136ff94ac4d36a391e387933baf2a67e/68747470733a2f2f6c736b792e3565652e6e65742f6c736b792f323032342f31322f32372f363736656134656666306439372e77656270" alt="" data-canonical-src="https://lsky.5ee.net/lsky/2024/12/27/676ea4eff0d97.webp" style="max-width: 100%;"></a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://susannayye.github.io/blog">Ai氪的博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","susannayye/blog");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

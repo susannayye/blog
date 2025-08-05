@@ -1,5 +1,170 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Ai氪的博客</title><link>https://susannayye.github.io/blog</link><description>我是Ai氪，分享好玩软件DIY的技术类博主</description><copyright>Ai氪的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/170783091?s=400&amp;u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&amp;v=4</url><title>avatar</title><link>https://susannayye.github.io/blog</link></image><lastBuildDate>Sun, 03 Aug 2025 14:58:08 +0000</lastBuildDate><managingEditor>Ai氪的博客</managingEditor><ttl>60</ttl><webMaster>Ai氪的博客</webMaster><item><title>Windows修改C盘用户名 连接数限制</title><link>https://susannayye.github.io/blog/post/Windows-xiu-gai-C-pan-yong-hu-ming-%20-lian-jie-shu-xian-zhi.html</link><description>“运行”对话框中输入 netplwiz
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Ai氪的博客</title><link>https://susannayye.github.io/blog</link><description>我是Ai氪，分享好玩软件DIY的技术类博主</description><copyright>Ai氪的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/170783091?s=400&amp;u=59fd93ca8e5152ed6a44fddbfc4ea028bf0f1a77&amp;v=4</url><title>avatar</title><link>https://susannayye.github.io/blog</link></image><lastBuildDate>Tue, 05 Aug 2025 06:13:55 +0000</lastBuildDate><managingEditor>Ai氪的博客</managingEditor><ttl>60</ttl><webMaster>Ai氪的博客</webMaster><item><title>1panel 用docker图形化安装3x-ui</title><link>https://susannayye.github.io/blog/post/1panel%20-yong-docker-tu-xing-hua-an-zhuang-3x-ui.html</link><description>## 1panel 用docker图形化安装3x-ui
+
+#安装1panel面板
+
+&lt;https://1panel.cn/docs/installation/online_installation/&gt;
+
+我使用的服务器为debain12，先通过ssh安装它
+
+```
+curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh &amp;&amp; bash quick_start.sh
+```
+
+* 选择你喜欢的语言：**2**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca8be42abe.webp)
+
+* 默认 **opt**
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676ca9151a8fa.webp)
+
+* 设置**端口**
+
+* 设置**安全入口**
+
+* 设置**账号**
+
+* 设置**密码**
+
+### 安装防火墙
+
+&lt;https://1panel.cn/docs/user_manual/hosts/firewall/&gt;
+
+#### 更新软件包
+
+```
+sudo apt update
+```
+
+#### 安装 UFW
+
+```
+sudo apt install ufw
+```
+
+#### 放开 1Panel 系统端口
+
+```
+sudo ufw allow 8090/tcp
+```
+
+上述命令中的 8090 端口需要替换为安装 1Panel 系统时自定义的端口
+
+因还是需要通过命令，后续的所有操作由1panel内置终端操作
+
+#### 启动 UFW
+
+```
+sudo ufw enable
+```
+
+#### 不放行22端口
+
+为了安全着想
+
+如果你的ssh非标准也不需要放开，请注意，如果你没有放开1panel，将无法在访问，则需要服务商提供通过vnc或控制台放开端口
+
+![](https://lsky.5ee.net/lsky/2024/12/26/676cae1f1d71f.webp)
+
+### 使用编排docker
+
+```
+version: '3'
+
+services:
+  3x-ui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3x-ui
+    hostname: my-3x-ui
+    volumes:
+      - ./db/:/etc/x-ui/
+      - ./cert/:/root/cert/  #默认路径在/opt/1panel/docker/compose/下面
+    environment:
+      XRAY_VMESS_AEAD_FORCED: 'false'
+    tty: true
+    network_mode: host
+    restart: unless-stopped
+```
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e3dcf1a0c6.webp)
+
+#### 容器日志
+
+已经成功运行，它原使用的是本地host
+
+你可以通过浏览器访问 http\://&lt;服务器IP地址&gt;:2053 来访问 3x-ui 的 Web 界面，**如果你安装了防火墙，是访问不了的，请先放开端口**
+
+```
+erver ready
+(0x2a354e0,0xc00060e1b0)
+2024/12/27 09:12:33 Starting x-ui 2.4.10
+(0x2a354e0,0xc0004c2630)
+INFO - Web server running HTTP on [::]:2053
+INFO - XRAY: infra/conf/serial: Reading config: &amp;{Name:bin/config.json Format:json}
+WARNING - XRAY: core: Xray 24.12.18 started
+```
+
+## 设置x-ui
+
+官方教程
+
+&lt;https://github.com/MHSanaei/3x-ui&gt;
+
+&gt; 并不建议使用80 443 端口，可以使用其他非标准端口
+
+默认用户名:admin
+
+默认密码：admin
+
+请注意登录进去修改对应的账号密码，
+
+![676e6482864fc.webp](https://lsky.5ee.net/lsky/2024/12/27/676e6482864fc.webp)
+
+### 安全设置
+
+#### 修改密码用户名以及开启令牌
+
+注意保存令牌
+
+面板设置-安全设定
+
+修改原用户名密码
+
+搞定后保存后重启面板
+
+![676e64829454b.webp](https://lsky.5ee.net/lsky/2024/12/27/676e64829454b.webp)
+
+#### 修改默认url地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e629f45854.webp)
+
+### 新建一个反向代理
+
+前提是域名解析到当前服务器IP地址
+
+通过1panel安装openresty（nginx），使用它新建一个反向代理
+
+http\://127.0.0.1:2053 为本地地址
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e523045bb7.webp)
+
+#### 申请证书
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e7490a8c48.webp)
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp)
+
+#### 启用https
+
+![](https://lsky.5ee.net/lsky/2024/12/27/676e532d1dae9.webp)
+
+#### 官方的nginx代码
+
+```
+location /sub {
+#Nginx 子路径
+#确保面板设置中的 “URI Path” 相同。</description><guid isPermaLink="true">https://susannayye.github.io/blog/post/1panel%20-yong-docker-tu-xing-hua-an-zhuang-3x-ui.html</guid><pubDate>Tue, 05 Aug 2025 06:13:27 +0000</pubDate></item><item><title>Windows修改C盘用户名 连接数限制</title><link>https://susannayye.github.io/blog/post/Windows-xiu-gai-C-pan-yong-hu-ming-%20-lian-jie-shu-xian-zhi.html</link><description>“运行”对话框中输入 netplwiz
 
 修改连接数限制
 “运行”对话框中输入gpedit.msc。</description><guid isPermaLink="true">https://susannayye.github.io/blog/post/Windows-xiu-gai-C-pan-yong-hu-ming-%20-lian-jie-shu-xian-zhi.html</guid><pubDate>Sun, 03 Aug 2025 13:46:52 +0000</pubDate></item><item><title>通过命令行在 Ubuntu 24.04  server 上设置静态 IP 地址</title><link>https://susannayye.github.io/blog/post/tong-guo-ming-ling-xing-zai-%20Ubuntu%2024.04%20%20server%20-shang-she-zhi-jing-tai-%20IP%20-di-zhi.html</link><description>
