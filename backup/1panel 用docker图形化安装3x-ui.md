@@ -60,7 +60,7 @@ sudo ufw enable
 
 如果你的ssh非标准也不需要放开，请注意，如果你没有放开1panel，将无法在访问，则需要服务商提供通过vnc或控制台放开端口
 
-![](https://lsky.5ee.net/lsky/2024/12/26/676cae1f1d71f.webp)
+<img width="870" height="815" alt="Image" src="https://github.com/user-attachments/assets/a6159e96-f0ad-49f1-a0aa-22062a909953" />
 
 ### 使用编排docker
 
