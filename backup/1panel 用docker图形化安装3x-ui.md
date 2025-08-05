@@ -12,11 +12,7 @@ curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_
 
 * 选择你喜欢的语言：**2**
 
-![](https://lsky.5ee.net/lsky/2024/12/26/676ca8be42abe.webp)
-
 * 默认 **opt**
-
-![](https://lsky.5ee.net/lsky/2024/12/26/676ca9151a8fa.webp)
 
 * 设置**端口**
 
