@@ -86,7 +86,7 @@ services:
     restart: unless-stopped
 ```
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e3dcf1a0c6.webp)
+<img width="904" height="527" alt="Image" src="https://github.com/user-attachments/assets/d370519c-d41e-4e75-a980-c8006fbb158c" />
 
 #### 容器日志
 
