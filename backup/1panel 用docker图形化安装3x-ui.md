@@ -118,7 +118,7 @@ WARNING - XRAY: core: Xray 24.12.18 started
 
 请注意登录进去修改对应的账号密码，
 
-![676e6482864fc.webp](https://lsky.5ee.net/lsky/2024/12/27/676e6482864fc.webp)
+<img width="880" height="712" alt="Image" src="https://github.com/user-attachments/assets/2e6a6f13-066c-4d2a-81c7-f5bcc6d45d78" />
 
 ### 安全设置
 
@@ -132,11 +132,11 @@ WARNING - XRAY: core: Xray 24.12.18 started
 
 搞定后保存后重启面板
 
-![676e64829454b.webp](https://lsky.5ee.net/lsky/2024/12/27/676e64829454b.webp)
+<img width="908" height="679" alt="Image" src="https://github.com/user-attachments/assets/470da47a-3020-4d03-9815-788a9a26017a" />
 
 #### 修改默认url地址
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e629f45854.webp)
+<img width="903" height="545" alt="Image" src="https://github.com/user-attachments/assets/427abf16-157f-4c69-9feb-e35b39584011" />
 
 ### 新建一个反向代理
 
@@ -146,11 +146,11 @@ WARNING - XRAY: core: Xray 24.12.18 started
 
 http\://127.0.0.1:2053 为本地地址
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e523045bb7.webp)
+<img width="909" height="532" alt="Image" src="https://github.com/user-attachments/assets/ada25313-002c-486b-9bad-27fbf262b644" />
 
 #### 申请证书
 
-![](https://lsky.5ee.net/lsky/2024/12/27/676e7490a8c48.webp)
+<img width="907" height="422" alt="Image" src="https://github.com/user-attachments/assets/ea1c6ccc-bc32-45d7-adbe-22644ffe499c" />
 
 ![](https://lsky.5ee.net/lsky/2024/12/27/676e52ba04e12.webp)
 
